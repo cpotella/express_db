@@ -6,7 +6,7 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 
-const { obtenerPost, agregarPost } = require('./server')
+const { obtenerPost, agregarPost, actualizarPost, borrarPost } = require('./server')
 
 app.listen(port, console.log("SERVIDOR ENCENDIDO"))
 
@@ -33,3 +33,32 @@ app.post("/posts", async (req, res) => {
       res.status(500).json({ error: "Error interno del servidor" });
     }
 })
+
+
+
+app.put("/posts/like/:id", async (req, res) => {
+    try {
+      const { id } = req.params; 
+      const { likes } = req.body;
+      const post = await actualizarPost(likes, id);
+      res.status(201).json(post);
+    } catch (error) {
+      console.error("Error al actualizar el post:", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+})
+
+
+
+
+app.delete("/posts/:id", async (req, res) => {
+    try {
+      const { id } = req.params; 
+      await borrarPost(id);
+      res.send("Viaje eliminado");
+    } catch (error) {
+      console.error("Error al actualizar el post:", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+})
+  
